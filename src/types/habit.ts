@@ -1,5 +1,12 @@
+export type HabitCategory = 'Health' | 'Work' | 'Mindset';
+export type HabitFrequency = 'Daily' | 'Weekly' | 'Monthly';
+
 export interface Habit {
   id: string;
   name: string;
-  completed: boolean;
+  category: HabitCategory;
+  frequency: HabitFrequency;
+  dailyTarget: number;
+  createdAt: string;
+  completedDates: string[];
 }
