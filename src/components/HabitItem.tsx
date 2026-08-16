@@ -6,7 +6,7 @@ interface HabitItemProps {
   habit: Habit;
 }
 
-export function HabitItem({ habit }: HabitItemProps) {
+export default function HabitItem({ habit }: HabitItemProps) {
   const weekDays = [
     { day: 'Mon', status: 'completed' },
     { day: 'Tue', status: 'completed' },
@@ -20,7 +20,7 @@ export function HabitItem({ habit }: HabitItemProps) {
   return (
     <div className="group flex items-center py-2 border-b border-border last:border-0 hover:bg-background/50 transition-colors">
       {/* Habit Name */}
-      <div className="w-[240px] flex-shrink-0">
+      <div className="w-60 flex-shrink-0">
         <h3 className="text-foreground text-[15px] font-medium tracking-tight">
           {habit.name}
         </h3>

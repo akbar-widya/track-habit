@@ -1,11 +1,11 @@
-import { HabitItem } from './HabitItem';
+import HabitItem from './HabitItem';
 import type { Habit } from '../types/habit';
 
 interface HabitListProps {
   habits: Habit[];
 }
 
-export function HabitList({ habits }: HabitListProps) {
+export default function HabitList({ habits }: HabitListProps) {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   return (

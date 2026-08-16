@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { HabitList } from './components/HabitList';
+import HabitList from './components/HabitList';
 import type { Habit } from './types/habit';
-import { HabitForm } from './components/HabitForm';
+import HabitForm from './components/HabitForm';
 
 export default function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
