@@ -29,7 +29,10 @@ export default function HabitForm({ onClose }: HabitFormProps) {
 
   const selectedCategory = watch('category');
 
-  const onSubmit = () => {};
+  const onSubmit = (data: FormData) => {
+    console.log('Form submitted:', data);
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50">
@@ -51,18 +54,23 @@ export default function HabitForm({ onClose }: HabitFormProps) {
         >
           {/* Habit Name */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="">Habit Name</label>
+            <label className="text-[11px] font-semibold text-muted uppercase tracking-wider">
+              Habit Name
+            </label>
             <input
               {...register('name')}
               placeholder="e.g., Read 10 pages"
+              className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
               autoFocus
             />
           </div>
 
           {/* Category */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="">Category</label>
-            <div className="flex">
+            <label className="text-[11px] font-semibold text-muted uppercase tracking-wider">
+              Category
+            </label>
+            <div className="flex gap-3">
               {(['Health', 'Work', 'Mindset'] as const).map((cat) => {
                 const Icon =
                   cat === 'Health' ? Heart : cat === 'Work' ? Briefcase : Brain;
@@ -71,6 +79,9 @@ export default function HabitForm({ onClose }: HabitFormProps) {
                   <button
                     key={cat}
                     type="button"
+                    onClick={() =>
+                      setValue('category', cat, { shouldValidate: true })
+                    }
                     className={cn(
                       'flex items-center gap-2 px-3 py-1.5 rounded border text-sm transition-colors',
                       isActive
@@ -88,23 +99,33 @@ export default function HabitForm({ onClose }: HabitFormProps) {
 
           {/* Frequency & Target */}
           <div className="flex gap-4">
-            <div className="flex">
-              <label htmlFor="">Frequency</label>
-              <select {...register('frequency')}>
+            <div className="flex flex-col gap-2 flex-1">
+              <label className="text-[11px] font-semibold text-muted uppercase tracking-wider">
+                Frequency
+              </label>
+              <select
+                {...register('frequency')}
+                className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
+              >
                 <option value="Daily">Daily</option>
                 <option value="Weekly">Weekly</option>
                 <option value="Monthly">Monthly</option>
               </select>
             </div>
 
-            <div className="flex">
-              <label htmlFor="">Daily Target</label>
+            <div className="flex flex-col gap-2 flex-1">
+              <label className="text-[11px] font-semibold text-muted uppercase tracking-wider">
+                Daily Target
+              </label>
               <div className="relative">
                 <input
                   type="number"
                   {...register('dailyTarget', { valueAsNumber: true })}
+                  className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary transition-colors w-full"
                 />
-                <span>times</span>
+                <span className="absolute right-3 top-2 text-sm text-muted font-mono">
+                  times
+                </span>
               </div>
             </div>
           </div>
@@ -114,7 +135,7 @@ export default function HabitForm({ onClose }: HabitFormProps) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-4 text-sm font-medium text-foreground bg-transparent hover:bg-surface border border-transparent rounded transition-colors"
+              className="px-4 py-4 text-sm font-medium text-foreground bg-transparent hover:bg-surface-elevated border border-transparent rounded transition-colors"
             >
               Cancel
             </button>
