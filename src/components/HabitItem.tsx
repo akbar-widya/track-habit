@@ -18,10 +18,10 @@ export function HabitItem({ habit }: HabitItemProps) {
   ];
 
   return (
-    <div className="group flex items-center py-2 border-b border-[#23272F] hover:bg-[#16191E] transition-colors">
+    <div className="group flex items-center py-2 border-b border-border last:border-0 hover:bg-background/50 transition-colors">
       {/* Habit Name */}
       <div className="w-[240px] flex-shrink-0">
-        <h3 className="text-white text-[15px] font-medium tracking-tight">
+        <h3 className="text-foreground text-[15px] font-medium tracking-tight">
           {habit.name}
         </h3>
       </div>
@@ -34,10 +34,10 @@ export function HabitItem({ habit }: HabitItemProps) {
             className={cn(
               'w-6 h-6 rounded-full border flex items-center justify-center transition-all',
               d.status === 'completed' &&
-                'bg-[#10B981]/10 border-[#10B981] text-[#10B981]',
-              d.status === 'today' && 'border-[#6366F1] border-2',
+                'bg-success/10 border-success text-success',
+              d.status === 'today' && 'border-primary border-2 bg-transparent',
               d.status === 'upcoming' &&
-                'border-[#23272F] bg-transparent hover:border-[#464554]',
+                'border-border bg-transparent hover:border-muted',
             )}
           >
             {d.status === 'completed' && (
@@ -56,13 +56,13 @@ export function HabitItem({ habit }: HabitItemProps) {
       </div>
 
       {/* Metrics */}
-      <div className="flex items-center gap-6 w-[200px] justify-end flex-shrink-0">
-        <div className="flex items-center gap-1.5 text-white text-[14px]">
+      <div className="flex items-center gap-6 w-50 justify-end flex-shrink-0">
+        <div className="flex items-center gap-1.5 text-foreground text-[14px]">
           <Flame className="w-4 h-4 text-[#d97721]" />
           <span className="font-semibold">12</span>
-          <span className="text-[#8A8F98] text-[12px] font-medium">days</span>
+          <span className="text-muted text-[12px] font-medium">days</span>
         </div>
-        <div className="text-[#8A8F98] text-[12px] font-mono w-10 text-right">
+        <div className="text-muted text-[12px] font-mono w-10 text-right">
           70%
         </div>
       </div>

@@ -9,10 +9,10 @@ export function HabitList({ habits }: HabitListProps) {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   return (
-    <div className="border border-[#23272F] rounded-lg bg-[#16191E] overflow-hidden">
+    <div className="border border-border rounded-lg bg-surface overflow-hidden">
       {/* Header Row */}
-      <div className="flex items-center py-3 px-4 border-b border-[#23272F] text-[11px] font-semibold text-[#8A8F98] uppercase tracking-wider">
-        <div className="w-[240px]">Habit</div>
+      <div className="flex items-center py-3 px-4 border-b border-border text-[11px] font-semibold text-muted uppercase tracking-wider">
+        <div className="w-60">Habit</div>
         <div className="flex-1 flex justify-between px-2">
           {days.map((day) => (
             <div key={day} className="w-6 text-center">
@@ -20,7 +20,7 @@ export function HabitList({ habits }: HabitListProps) {
             </div>
           ))}
         </div>
-        <div className="w-[200px] flex justify-end gap-10 pr-2">
+        <div className="w-50 flex justify-end gap-10 pr-2">
           <span>Streak</span>
           <span>Progress</span>
         </div>

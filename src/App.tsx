@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { HabitList } from './components/HabitList';
 import type { Habit } from './types/habit';
+import { HabitForm } from './components/HabitForm';
 
 export default function App() {
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const mockHabits: Habit[] = [
     {
       id: '1',
@@ -32,7 +34,7 @@ export default function App() {
         <div className="text-sm text-muted">Navigation Placeholder</div>
       </header>
 
-      <main className="max-w-[1200px] mx-auto px-6 py-10 flex flex-col gap-8">
+      <main className="max-w-300 mx-auto px-6 py-10 flex flex-col gap-8">
         {/* Date & Add Button */}
         <div className="flex justify-between items-end">
           <div>
@@ -43,7 +45,10 @@ export default function App() {
               0/0 habits completed today
             </p>
           </div>
-          <button className="bg-primary hover:bg-primary-hover text-foreground px-4 py-2 rounded transition-colors font-medium text-sm">
+          <button
+            onClick={() => setIsFormOpen(true)}
+            className="bg-primary hover:bg-primary-hover text-foreground px-4 py-2 rounded transition-colors font-medium text-sm"
+          >
             + Add Habit
           </button>
         </div>
@@ -55,6 +60,8 @@ export default function App() {
         <div className="border border-border rounded-lg bg-surface p-8 text-center text-muted border-dashed h-48 flex items-center justify-center">
           [Performance Trend Component Will Go Here]
         </div>
+
+        {isFormOpen && <HabitForm onClose={() => setIsFormOpen(false)} />}
       </main>
     </div>
   );
