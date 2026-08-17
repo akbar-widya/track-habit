@@ -6,7 +6,13 @@ import { useHabits } from './hooks/useHabits';
 
 export default function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const { habits, addHabit, habitsCompletedToday, totalHabits } = useHabits();
+  const {
+    habits,
+    addHabit,
+    toggleHabitCompletion,
+    habitsCompletedToday,
+    totalHabits,
+  } = useHabits();
 
   const todayLabel = format(new Date(), 'EEE, MMM d');
 
@@ -38,7 +44,7 @@ export default function App() {
         </div>
 
         {/* Habit List */}
-        <HabitList habits={habits} />
+        <HabitList habits={habits} onToggle={toggleHabitCompletion} />
 
         {/* Performance Trend Placeholder */}
         <div className="border border-border rounded-lg bg-surface p-8 text-center text-muted border-dashed h-48 flex items-center justify-center">
