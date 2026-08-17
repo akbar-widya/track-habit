@@ -1,30 +1,14 @@
 import { useState } from 'react';
 import HabitList from './components/HabitList';
-import type { Habit } from './types/habit';
 import HabitForm from './components/HabitForm';
+import { format } from 'date-fns';
+import { useHabits } from './hooks/useHabits';
 
 export default function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const mockHabits: Habit[] = [
-    {
-      id: '1',
-      name: 'Read for 30 mins',
-      category: 'Mindset',
-      frequency: 'Daily',
-      dailyTarget: 1,
-      createdAt: '',
-      completedDates: [],
-    },
-    {
-      id: '2',
-      name: 'Morning Yoga',
-      category: 'Health',
-      frequency: 'Daily',
-      dailyTarget: 1,
-      createdAt: '',
-      completedDates: [],
-    },
-  ];
+  const { habits, addHabit, habitsCompletedToday, totalHabits } = useHabits();
+
+  const todayLabel = format(new Date(), 'EEE, MMM d');
 
   return (
     <div className="min-h-screen selection:bg-primary/30">
@@ -39,10 +23,10 @@ export default function App() {
         <div className="flex justify-between items-end">
           <div>
             <h1 className="text-[32px] font-semibold tracking-tight leading-tight">
-              Tuesday, Oct 24
+              {todayLabel}
             </h1>
             <p className="text-muted text-[15px] mt-1">
-              0/0 habits completed today
+              {habitsCompletedToday}/{totalHabits} habits completed today
             </p>
           </div>
           <button
@@ -54,14 +38,19 @@ export default function App() {
         </div>
 
         {/* Habit List */}
-        <HabitList habits={mockHabits} />
+        <HabitList habits={habits} />
 
         {/* Performance Trend Placeholder */}
         <div className="border border-border rounded-lg bg-surface p-8 text-center text-muted border-dashed h-48 flex items-center justify-center">
           [Performance Trend Component Will Go Here]
         </div>
 
-        {isFormOpen && <HabitForm onClose={() => setIsFormOpen(false)} />}
+        {isFormOpen && (
+          <HabitForm
+            onClose={() => setIsFormOpen(false)}
+            onSubmitHabit={addHabit}
+          />
+        )}
       </main>
     </div>
   );

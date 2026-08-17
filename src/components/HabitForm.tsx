@@ -15,9 +15,10 @@ type FormData = z.infer<typeof formSchema>;
 
 interface HabitFormProps {
   onClose: () => void;
+  onSubmitHabit: (data: FormData) => void;
 }
 
-export default function HabitForm({ onClose }: HabitFormProps) {
+export default function HabitForm({ onClose, onSubmitHabit }: HabitFormProps) {
   const { register, handleSubmit, watch, setValue } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -30,7 +31,7 @@ export default function HabitForm({ onClose }: HabitFormProps) {
   const selectedCategory = watch('category');
 
   const onSubmit = (data: FormData) => {
-    console.log('Form submitted:', data);
+    onSubmitHabit(data);
     onClose();
   };
 
