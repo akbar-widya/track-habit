@@ -7,6 +7,7 @@ interface WeekDay {
   dateString: string;
   dayName: string;
   isToday: boolean;
+  isFuture: boolean;
 }
 
 interface HabitItemProps {
@@ -45,8 +46,14 @@ export default function HabitItem({
             <button
               key={d.dateString}
               onClick={() => onToggle(habit.id, d.dateString)}
+              disabled={d.isFuture}
               className={cn(
                 'w-6 h-6 rounded-full border flex items-center justify-center transition-all',
+                d.isFuture && 'opacity-30 cursor-not-allowed',
+                !d.isFuture &&
+                  !isCompleted &&
+                  !d.isToday &&
+                  'hover:border-muted',
                 isCompleted
                   ? 'bg-success/10 border-success text-success'
                   : d.isToday
