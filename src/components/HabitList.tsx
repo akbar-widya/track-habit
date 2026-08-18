@@ -5,9 +5,14 @@ import { getCurrentWeekDays } from '../utils/date';
 interface HabitListProps {
   habits: Habit[];
   onToggle: (habitId: string, dateString: string) => void;
+  onDelete: (habitId: string) => void;
 }
 
-export default function HabitList({ habits, onToggle }: HabitListProps) {
+export default function HabitList({
+  habits,
+  onToggle,
+  onDelete,
+}: HabitListProps) {
   const weekDays = getCurrentWeekDays();
 
   return (
@@ -41,6 +46,7 @@ export default function HabitList({ habits, onToggle }: HabitListProps) {
               habit={habit}
               weekDays={weekDays}
               onToggle={onToggle}
+              onDelete={onDelete}
             />
           ))
         )}

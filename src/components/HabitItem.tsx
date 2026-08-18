@@ -1,4 +1,4 @@
-import { Flame } from 'lucide-react';
+import { Flame, Trash2 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import type { Habit } from '../types/habit';
 import { calculateStreak } from '../utils/date';
@@ -14,12 +14,14 @@ interface HabitItemProps {
   habit: Habit;
   weekDays: WeekDay[];
   onToggle: (habitId: string, dateString: string) => void;
+  onDelete: (habitId: string) => void;
 }
 
 export default function HabitItem({
   habit,
   weekDays,
   onToggle,
+  onDelete,
 }: HabitItemProps) {
   const streak = calculateStreak(habit.completedDates);
 
@@ -31,10 +33,17 @@ export default function HabitItem({
   return (
     <div className="group flex items-center py-2 border-b border-border last:border-0 hover:bg-background/50 transition-colors">
       {/* Habit Name */}
-      <div className="w-60 flex-shrink-0">
-        <h3 className="text-foreground text-[15px] font-medium tracking-tight">
+      <div className="w-60 flex-shrink-0 flex items-center justify-between pr-4">
+        <h3 className="text-foreground text-[15px] font-medium tracking-tight truncate">
           {habit.name}
         </h3>
+        <button
+          onClick={() => onDelete(habit.id)}
+          className="opacity-0 group-hover:opacity-100 text-muted hover:text-[#FFB4AB] transition-all"
+          title="Delete Habit"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
       </div>
 
       {/* Days Grid */}

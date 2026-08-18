@@ -32,6 +32,10 @@ export function useHabits() {
     );
   };
 
+  const deleteHabit = (habitId: string) => {
+    setHabits(habits.filter((habit) => habit.id !== habitId));
+  };
+
   const today = getTodayString();
   const habitsCompletedToday = habits.filter((h) =>
     h.completedDates.includes(today),
@@ -42,6 +46,7 @@ export function useHabits() {
     habits,
     addHabit,
     toggleHabitCompletion,
+    deleteHabit,
     habitsCompletedToday,
     totalHabits,
   };

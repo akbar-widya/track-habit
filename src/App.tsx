@@ -10,6 +10,7 @@ export default function App() {
     habits,
     addHabit,
     toggleHabitCompletion,
+    deleteHabit,
     habitsCompletedToday,
     totalHabits,
   } = useHabits();
@@ -44,7 +45,11 @@ export default function App() {
         </div>
 
         {/* Habit List */}
-        <HabitList habits={habits} onToggle={toggleHabitCompletion} />
+        <HabitList
+          habits={habits}
+          onToggle={toggleHabitCompletion}
+          onDelete={deleteHabit}
+        />
 
         {/* Performance Trend Placeholder */}
         <div className="border border-border rounded-lg bg-surface p-8 text-center text-muted border-dashed h-48 flex items-center justify-center">
