@@ -7,6 +7,7 @@ export interface Habit {
   category: HabitCategory;
   frequency: HabitFrequency;
   dailyTarget: number;
+  unit?: string;
   createdAt: string;
   completedDates: string[];
 }

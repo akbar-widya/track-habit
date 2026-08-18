@@ -9,6 +9,7 @@ const formSchema = z.object({
   category: z.enum(['Health', 'Work', 'Mindset'] as const),
   frequency: z.enum(['Daily', 'Weekly', 'Monthly'] as const),
   dailyTarget: z.number().min(1),
+  unit: z.string().max(25, 'Max 25 characters').optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -25,10 +26,12 @@ export default function HabitForm({ onClose, onSubmitHabit }: HabitFormProps) {
       category: 'Health',
       frequency: 'Daily',
       dailyTarget: 1,
+      unit: '',
     },
   });
 
   const selectedCategory = watch('category');
+  const selectedFrequency = watch('frequency');
 
   const onSubmit = (data: FormData) => {
     onSubmitHabit(data);
@@ -116,17 +119,20 @@ export default function HabitForm({ onClose, onSubmitHabit }: HabitFormProps) {
 
             <div className="flex flex-col gap-2 flex-1">
               <label className="text-[11px] font-semibold text-muted uppercase tracking-wider">
-                Daily Target
+                {selectedFrequency} Target
               </label>
-              <div className="relative">
+              <div className="flex gap-2">
                 <input
                   type="number"
                   {...register('dailyTarget', { valueAsNumber: true })}
-                  className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary transition-colors w-full"
+                  className="w-16 bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary transition-colors text-center"
                 />
-                <span className="absolute right-3 top-2 text-sm text-muted font-mono">
-                  times
-                </span>
+                <input
+                  type="text"
+                  {...register('unit')}
+                  placeholder="e.g. pages, km"
+                  className="flex-1 bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
+                />
               </div>
             </div>
           </div>
@@ -136,7 +142,7 @@ export default function HabitForm({ onClose, onSubmitHabit }: HabitFormProps) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-4 text-sm font-medium text-foreground bg-transparent hover:bg-surface-elevated border border-transparent rounded transition-colors"
+              className="px-4 py-2 text-sm font-medium text-foreground bg-transparent hover:bg-surface-elevated border border-transparent rounded transition-colors"
             >
               Cancel
             </button>
