@@ -3,6 +3,7 @@ import HabitList from './components/HabitList';
 import HabitForm from './components/HabitForm';
 import { format } from 'date-fns';
 import { useHabits } from './hooks/useHabits';
+import PerformanceTrend from './components/PerformanceTrend';
 
 export default function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -52,9 +53,7 @@ export default function App() {
         />
 
         {/* Performance Trend Placeholder */}
-        <div className="border border-border rounded-lg bg-surface p-8 text-center text-muted border-dashed h-48 flex items-center justify-center">
-          [Performance Trend Component Will Go Here]
-        </div>
+        <PerformanceTrend habits={habits} />
 
         {isFormOpen && (
           <HabitForm
