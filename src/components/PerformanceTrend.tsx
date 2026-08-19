@@ -57,7 +57,7 @@ export default function PerformanceTrend({ habits }: PerformanceTrendProps) {
             <div className="flex items-center gap-1.5 text-[11px] text-muted">
               <span>Low</span>
               <div className="flex gap-1">
-                <div className="w-3 h-3 rounded-sm bg-[#1C1F26] border border-[#23272F]"></div>
+                <div className="w-3 h-3 rounded-sm bg-[#1C1F26] border border-border"></div>
                 <div className="w-3 h-3 rounded-sm bg-success/40 border border-success/20"></div>
                 <div className="w-3 h-3 rounded-sm bg-success/70 border border-success/40"></div>
                 <div className="w-3 h-3 rounded-sm bg-success border border-success/60"></div>

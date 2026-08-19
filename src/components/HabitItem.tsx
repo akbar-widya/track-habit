@@ -1,4 +1,4 @@
-import { Flame, Trash2 } from 'lucide-react';
+import { Edit2, Flame, Trash2 } from 'lucide-react';
 import { cn } from '../utils/cn';
 import type { Habit } from '../types/habit';
 import { calculateStreak } from '../utils/date';
@@ -15,6 +15,7 @@ interface HabitItemProps {
   weekDays: WeekDay[];
   onToggle: (habitId: string, dateString: string) => void;
   onDelete: (habitId: string) => void;
+  onEdit: (habit: Habit) => void;
 }
 
 export default function HabitItem({
@@ -22,6 +23,7 @@ export default function HabitItem({
   weekDays,
   onToggle,
   onDelete,
+  onEdit,
 }: HabitItemProps) {
   const streak = calculateStreak(habit.completedDates);
 
@@ -32,7 +34,7 @@ export default function HabitItem({
 
   return (
     <div className="group flex items-center py-2 border-b border-border last:border-0 hover:bg-background/50 transition-colors">
-      {/* Habit Name */}
+      {/* Habit Name, Details & Action Button */}
       <div className="w-60 flex-shrink-0 flex items-center justify-between pr-4">
         <div className="flex flex-col truncate">
           <h3 className="text-foreground text-[15px] font-medium tracking-tight truncate">
@@ -42,13 +44,22 @@ export default function HabitItem({
             {habit.frequency}• {habit.dailyTarget} {habit.unit || 'times'}
           </p>
         </div>
-        <button
-          onClick={() => onDelete(habit.id)}
-          className="opacity-0 group-hover:opacity-100 text-muted hover:text-[#FFB4AB] transition-all"
-          title="Delete Habit"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={() => onEdit(habit)}
+            className="text-muted hover:text-foreground transition-colors"
+            title="Edit Habit"
+          >
+            <Edit2 className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => onDelete(habit.id)}
+            className="text-muted hover:text-[#FFB4AB] transition-colors"
+            title="Delete Habit"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
 
       {/* Days Grid */}

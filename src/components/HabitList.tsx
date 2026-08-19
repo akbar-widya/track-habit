@@ -8,6 +8,7 @@ interface HabitListProps {
   habits: Habit[];
   onToggle: (habitId: string, dateString: string) => void;
   onDelete: (habitId: string) => void;
+  onEdit: (habit: Habit) => void;
 }
 
 type FilterType = 'All' | HabitCategory;
@@ -15,6 +16,7 @@ type FilterType = 'All' | HabitCategory;
 export default function HabitList({
   habits,
   onToggle,
+  onEdit,
   onDelete,
 }: HabitListProps) {
   const [filter, setFilter] = useState<FilterType>('All');
@@ -75,6 +77,7 @@ export default function HabitList({
                 habit={habit}
                 weekDays={weekDays}
                 onToggle={onToggle}
+                onEdit={onEdit}
                 onDelete={onDelete}
               />
             ))

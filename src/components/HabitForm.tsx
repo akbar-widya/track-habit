@@ -3,6 +3,7 @@ import { Brain, Briefcase, Heart, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { cn } from '../utils/cn';
+import type { Habit } from '../types/habit';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -17,17 +18,30 @@ type FormData = z.infer<typeof formSchema>;
 interface HabitFormProps {
   onClose: () => void;
   onSubmitHabit: (data: FormData) => void;
+  initialData?: Habit | null;
 }
 
-export default function HabitForm({ onClose, onSubmitHabit }: HabitFormProps) {
+export default function HabitForm({
+  onClose,
+  onSubmitHabit,
+  initialData,
+}: HabitFormProps) {
   const { register, handleSubmit, watch, setValue } = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      category: 'Health',
-      frequency: 'Daily',
-      dailyTarget: 1,
-      unit: '',
-    },
+    defaultValues: initialData
+      ? {
+          name: initialData.name,
+          category: initialData.category,
+          frequency: initialData.frequency,
+          dailyTarget: initialData.dailyTarget,
+          unit: initialData.unit || '',
+        }
+      : {
+          category: 'Health',
+          frequency: 'Daily',
+          dailyTarget: 1,
+          unit: '',
+        },
   });
 
   const selectedCategory = watch('category');
@@ -43,7 +57,7 @@ export default function HabitForm({ onClose, onSubmitHabit }: HabitFormProps) {
       <div className="bg-surface border border-border w-full max-w-md rounded-lg shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border">
-          <h2>Add New Habit</h2>
+          <h2>{initialData ? 'Edit Habit' : 'Add New Habit'}</h2>
           <button
             onClick={onClose}
             className="text-muted hover:text-foreground transition-colors"
@@ -63,6 +77,7 @@ export default function HabitForm({ onClose, onSubmitHabit }: HabitFormProps) {
             </label>
             <input
               {...register('name')}
+              disabled={!!initialData}
               placeholder="e.g., Read 10 pages"
               className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
               autoFocus
@@ -150,7 +165,7 @@ export default function HabitForm({ onClose, onSubmitHabit }: HabitFormProps) {
               type="submit"
               className="px-4 py-2 text-sm font-medium text-foreground bg-primary hover:bg-primary-hover rounded transition-colors flex items-center gap-1"
             >
-              <span>+</span> Create Habit
+              {initialData ? 'Save Changes' : <span>+ Create Habit</span>}
             </button>
           </div>
         </form>

@@ -4,17 +4,38 @@ import HabitForm from './components/HabitForm';
 import { format } from 'date-fns';
 import { useHabits } from './hooks/useHabits';
 import PerformanceTrend from './components/PerformanceTrend';
+import type { Habit } from './types/habit';
 
 export default function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
   const {
     habits,
     addHabit,
     toggleHabitCompletion,
+    editHabit,
     deleteHabit,
     habitsCompletedToday,
     totalHabits,
   } = useHabits();
+
+  const handleFormSubmit = (data: any) => {
+    if (editingHabit) {
+      editHabit(editingHabit.id, data);
+    } else {
+      addHabit(data);
+    }
+  };
+
+  const openEditForm = (habit: Habit) => {
+    setEditingHabit(habit);
+    setIsFormOpen(true);
+  };
+
+  const closeForm = () => {
+    setIsFormOpen(false);
+    setEditingHabit(null);
+  };
 
   const todayLabel = format(new Date(), 'EEE, MMM d');
 
@@ -49,6 +70,7 @@ export default function App() {
         <HabitList
           habits={habits}
           onToggle={toggleHabitCompletion}
+          onEdit={openEditForm}
           onDelete={deleteHabit}
         />
 
@@ -57,8 +79,9 @@ export default function App() {
 
         {isFormOpen && (
           <HabitForm
-            onClose={() => setIsFormOpen(false)}
-            onSubmitHabit={addHabit}
+            onClose={closeForm}
+            onSubmitHabit={handleFormSubmit}
+            initialData={editingHabit}
           />
         )}
       </main>

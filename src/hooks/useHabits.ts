@@ -32,6 +32,17 @@ export function useHabits() {
     );
   };
 
+  const editHabit = (
+    habitId: string,
+    updatedData: Omit<Habit, 'id' | 'createdAt' | 'completedDates'>,
+  ) => {
+    setHabits(
+      habits.map((habit) =>
+        habit.id === habitId ? { ...habit, ...updatedData } : habit,
+      ),
+    );
+  };
+
   const deleteHabit = (habitId: string) => {
     setHabits(habits.filter((habit) => habit.id !== habitId));
   };
@@ -46,6 +57,7 @@ export function useHabits() {
     habits,
     addHabit,
     toggleHabitCompletion,
+    editHabit,
     deleteHabit,
     habitsCompletedToday,
     totalHabits,
