@@ -1,4 +1,4 @@
-import { addDays, format, startOfWeek, subDays } from 'date-fns';
+import { differenceInCalendarDays, format, subDays } from 'date-fns';
 
 const DATE_FORMAT = 'yyy-MM-dd';
 
@@ -7,17 +7,18 @@ export function getTodayString(): string {
 }
 
 export function getCurrentWeekDays() {
-  const start = startOfWeek(new Date(), { weekStartsOn: 1 });
+  const today = new Date();
   const todayStr = getTodayString();
 
   return Array.from({ length: 7 }).map((_, i) => {
-    const date = addDays(start, i);
+    const date = subDays(today, 6 - i);
     const dateStr = format(date, DATE_FORMAT);
     return {
       dateString: format(date, DATE_FORMAT),
       dayName: format(date, 'EEE'),
-      isToday: format(date, DATE_FORMAT) === getTodayString(),
+      isToday: dateStr === todayStr,
       isFuture: dateStr > todayStr,
+      isLocked: differenceInCalendarDays(today, date) > 7,
     };
   });
 }
