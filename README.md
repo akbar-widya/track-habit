@@ -1,75 +1,35 @@
-# React + TypeScript + Vite
+# Minimalist Habit Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A sleek, high-density habit tracker designed for low-friction daily execution. Features a rolling 7-day activity grid, GitHub-style performance heatmaps, and inline target metrics.
 
-Currently, two official plugins are available:
+Currently, the application runs entirely in the browser using `localStorage` to ensure a fast, offline-first experience for the MVP.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Current Features
 
-## React Compiler
+- **Rolling 7-Day Grid:** Always keep "Today" in focus at the far right of your screen.
+- **Low-Friction Tracking:** A 7-day grace period allows you to backfill missed check-ins without rigid penalties.
+- **Performance Heatmap:** Visualize your consistency over the last 28 days with a GitHub-style activity grid.
+- **High Information Density:** See your daily targets, units, and categories inline without cluttering the interface.
+- **Local Persistence:** Your data is instantly saved to your browser's `localStorage`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Current Tech Stack
 
-## Expanding the ESLint configuration
+- **Frontend:** React, TypeScript, Vite
+- **Styling:** Tailwind CSS, Lucide React icons
+- **Form Handling & Validation:** React Hook Form, Zod
+- **Storage:** Browser `localStorage`
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Roadmap
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+The next phase of development will transition the application from local browser storage to a robust local/server database architecture. Upcoming technologies include:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **SQLite:** Lightweight, fast, and reliable database.
+- **Drizzle ORM:** Type-safe database interactions and schema management.
+- **BetterAuth:** Comprehensive authentication for multi-device sync and user accounts.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 📦 Getting Started
 
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/akbar-widya/track-habit.git
+   ```
