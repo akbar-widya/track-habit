@@ -25,7 +25,8 @@
     {
       "binding": "DB",
       "database_name": "habits-db",
-      "database_id": "local-dev"
+      "database_id": "local-dev",
+      "migrations_dir": "drizzle/migrations"
     }
   ],
   // "ai": {

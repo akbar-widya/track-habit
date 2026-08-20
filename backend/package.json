@@ -13,6 +13,7 @@
     "hono": "^4.13.3"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260819.1",
     "drizzle-kit": "^0.31.10",
     "wrangler": "^4.110.0"
   }
