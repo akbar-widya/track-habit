@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Habit } from '../types/habit';
 import { getTodayString } from '../utils/date';
-import { createHabit, getHabits, type NewHabitInput } from '../api/habits';
+import {
+  createHabit,
+  deleteHabitApi,
+  getHabits,
+  type NewHabitInput,
+} from '../api/habits';
 
 export function useHabits() {
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -56,8 +61,9 @@ export function useHabits() {
     );
   };
 
-  const deleteHabit = (habitId: string) => {
-    setHabits(habits.filter((habit) => habit.id !== habitId));
+  const deleteHabit = async (habitId: string) => {
+    await deleteHabitApi(habitId);
+    setHabits((prev) => prev.filter((habit) => habit.id !== habitId));
   };
 
   const today = getTodayString();

@@ -55,3 +55,7 @@ export async function createHabit(input: NewHabitInput): Promise<Habit> {
   });
   return normalizeHabit(data);
 }
+
+export async function deleteHabitApi(id: string): Promise<void> {
+  await request(`/habits/${id}`, { method: 'DELETE' });
+}

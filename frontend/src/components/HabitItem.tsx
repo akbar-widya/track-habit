@@ -14,7 +14,7 @@ interface HabitItemProps {
   habit: Habit;
   weekDays: WeekDay[];
   onToggle: (habitId: string, dateString: string) => void;
-  onDelete: (habitId: string) => void;
+  onDelete: (habit: Habit) => void;
   onEdit: (habit: Habit) => void;
 }
 
@@ -53,7 +53,7 @@ export default function HabitItem({
             <Edit2 className="w-3.5 h-3.5" />
           </button>
           <button
-            onClick={() => onDelete(habit.id)}
+            onClick={() => onDelete(habit)}
             className="text-muted hover:text-[#FFB4AB] transition-colors"
             title="Delete Habit"
           >

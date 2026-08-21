@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import HabitList from './components/HabitList';
 import HabitForm from './components/HabitForm';
+import ConfirmDialog from './components/ConfirmDialog';
 import { format } from 'date-fns';
 import { useHabits } from './hooks/useHabits';
 import PerformanceTrend from './components/PerformanceTrend';
@@ -9,6 +10,7 @@ import type { Habit } from './types/habit';
 export default function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
+  const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
   const {
     habits,
     loading,
@@ -33,6 +35,16 @@ export default function App() {
   const openEditForm = (habit: Habit) => {
     setEditingHabit(habit);
     setIsFormOpen(true);
+  };
+
+  const openDeleteDialog = (habit: Habit) => {
+    setHabitToDelete(habit);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!habitToDelete) return;
+    await deleteHabit(habitToDelete.id);
+    setHabitToDelete(null);
   };
 
   const closeForm = () => {
@@ -90,7 +102,7 @@ export default function App() {
             habits={habits}
             onToggle={toggleHabitCompletion}
             onEdit={openEditForm}
-            onDelete={deleteHabit}
+            onDelete={openDeleteDialog}
           />
         )}
 
@@ -102,6 +114,16 @@ export default function App() {
             onClose={closeForm}
             onSubmitHabit={handleFormSubmit}
             initialData={editingHabit}
+          />
+        )}
+
+        {habitToDelete && (
+          <ConfirmDialog
+            title="Delete Habit"
+            message={`Are you sure you want to delete "${habitToDelete.name}"? This will permanently remove the habit and all of its check-in logs.`}
+            confirmLabel="Delete"
+            onConfirm={handleConfirmDelete}
+            onCancel={() => setHabitToDelete(null)}
           />
         )}
       </main>

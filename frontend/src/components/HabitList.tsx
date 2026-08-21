@@ -7,7 +7,7 @@ import { cn } from '../utils/cn';
 interface HabitListProps {
   habits: Habit[];
   onToggle: (habitId: string, dateString: string) => void;
-  onDelete: (habitId: string) => void;
+  onDelete: (habit: Habit) => void;
   onEdit: (habit: Habit) => void;
 }
 
