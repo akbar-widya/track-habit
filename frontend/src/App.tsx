@@ -11,6 +11,9 @@ export default function App() {
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
   const {
     habits,
+    loading,
+    error,
+    refresh,
     addHabit,
     toggleHabitCompletion,
     editHabit,
@@ -19,11 +22,11 @@ export default function App() {
     totalHabits,
   } = useHabits();
 
-  const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = async (data: any) => {
     if (editingHabit) {
       editHabit(editingHabit.id, data);
     } else {
-      addHabit(data);
+      await addHabit(data);
     }
   };
 
@@ -67,12 +70,29 @@ export default function App() {
         </div>
 
         {/* Habit List */}
-        <HabitList
-          habits={habits}
-          onToggle={toggleHabitCompletion}
-          onEdit={openEditForm}
-          onDelete={deleteHabit}
-        />
+        {error && (
+          <div className="flex items-center justify-between border border-[#FFB4AB]/30 bg-[#FFB4AB]/10 text-[#FFB4AB] rounded px-4 py-3 text-sm">
+            <span>{error}</span>
+            <button
+              onClick={refresh}
+              className="font-medium hover:underline"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+        {loading ? (
+          <div className="border border-border rounded-lg bg-surface py-8 text-center text-muted text-sm">
+            Loading habits...
+          </div>
+        ) : (
+          <HabitList
+            habits={habits}
+            onToggle={toggleHabitCompletion}
+            onEdit={openEditForm}
+            onDelete={deleteHabit}
+          />
+        )}
 
         {/* Performance Trend Placeholder */}
         <PerformanceTrend habits={habits} />

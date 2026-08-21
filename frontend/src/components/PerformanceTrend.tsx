@@ -92,7 +92,10 @@ export default function PerformanceTrend({ habits }: PerformanceTrendProps) {
               const isCurrentWeek = index === 3;
 
               return (
-                <div className="flex-1 flex flex-col justify-end h-full group relative">
+                <div
+                  key={index}
+                  className="flex-1 flex flex-col justify-end h-full group relative"
+                >
                   {/* Tooltip on hover */}
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-[#1C1F26] text-foreground text-[11px] py-1 px-2 rounded border border-border pointer-events-none">
                     {count} total

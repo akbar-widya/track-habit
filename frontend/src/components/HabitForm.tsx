@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Brain, Briefcase, Heart, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { z } from 'zod';
 import { cn } from '../utils/cn';
 import type { Habit } from '../types/habit';
@@ -17,7 +18,7 @@ type FormData = z.infer<typeof formSchema>;
 
 interface HabitFormProps {
   onClose: () => void;
-  onSubmitHabit: (data: FormData) => void;
+  onSubmitHabit: (data: FormData) => void | Promise<void>;
   initialData?: Habit | null;
 }
 
@@ -26,6 +27,8 @@ export default function HabitForm({
   onSubmitHabit,
   initialData,
 }: HabitFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const { register, handleSubmit, watch, setValue } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData
@@ -47,9 +50,19 @@ export default function HabitForm({
   const selectedCategory = watch('category');
   const selectedFrequency = watch('frequency');
 
-  const onSubmit = (data: FormData) => {
-    onSubmitHabit(data);
-    onClose();
+  const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+    try {
+      await onSubmitHabit(data);
+      onClose();
+    } catch (err) {
+      setSubmitError(
+        err instanceof Error ? err.message : 'Something went wrong',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -153,19 +166,32 @@ export default function HabitForm({
           </div>
 
           {/* Footer actions */}
+          {submitError && (
+            <p className="text-[13px] text-[#FFB4AB] bg-[#FFB4AB]/10 border border-[#FFB4AB]/30 rounded px-3 py-2">
+              {submitError}
+            </p>
+          )}
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-foreground bg-transparent hover:bg-surface-elevated border border-transparent rounded transition-colors"
+              disabled={isSubmitting}
+              className="px-4 py-2 text-sm font-medium text-foreground bg-transparent hover:bg-surface-elevated border border-transparent rounded transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-foreground bg-primary hover:bg-primary-hover rounded transition-colors flex items-center gap-1"
+              disabled={isSubmitting}
+              className="px-4 py-2 text-sm font-medium text-foreground bg-primary hover:bg-primary-hover rounded transition-colors flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {initialData ? 'Save Changes' : <span>+ Create Habit</span>}
+              {isSubmitting ? (
+                'Saving...'
+              ) : initialData ? (
+                'Save Changes'
+              ) : (
+                <span>+ Create Habit</span>
+              )}
             </button>
           </div>
         </form>

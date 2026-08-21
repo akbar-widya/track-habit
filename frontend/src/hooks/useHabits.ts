@@ -1,20 +1,33 @@
+import { useCallback, useEffect, useState } from 'react';
 import type { Habit } from '../types/habit';
 import { getTodayString } from '../utils/date';
-import { useLocalStorage } from './useLocalStorage';
+import { createHabit, getHabits, type NewHabitInput } from '../api/habits';
 
 export function useHabits() {
-  const [habits, setHabits] = useLocalStorage<Habit[]>('habit-data', []);
+  const [habits, setHabits] = useState<Habit[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const addHabit = (
-    habitData: Omit<Habit, 'id' | 'createdAt' | 'completedDates'>,
-  ) => {
-    const newHabit: Habit = {
-      ...habitData,
-      id: crypto.randomUUID(),
-      createdAt: new Date().toISOString(),
-      completedDates: [],
-    };
-    setHabits([...habits, newHabit]);
+  const refresh = useCallback(async () => {
+    try {
+      setError(null);
+      const data = await getHabits();
+      setHabits(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load habits');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
+  const addHabit = async (habitData: NewHabitInput): Promise<Habit> => {
+    const created = await createHabit(habitData);
+    setHabits((prev) => [...prev, created]);
+    return created;
   };
 
   const toggleHabitCompletion = (habitId: string, dateString: string) => {
@@ -55,6 +68,9 @@ export function useHabits() {
 
   return {
     habits,
+    loading,
+    error,
+    refresh,
     addHabit,
     toggleHabitCompletion,
     editHabit,

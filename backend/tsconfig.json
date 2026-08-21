@@ -14,4 +14,7 @@
       "@cloudflare/workers-types"
     ]
   },
+  "include": [
+    "src"
+  ]
 }
