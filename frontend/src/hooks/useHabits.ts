@@ -5,7 +5,9 @@ import {
   createHabit,
   deleteHabitApi,
   getHabits,
+  updateHabitApi,
   type NewHabitInput,
+  type UpdateHabitInput,
 } from '../api/habits';
 
 export function useHabits() {
@@ -50,12 +52,10 @@ export function useHabits() {
     );
   };
 
-  const editHabit = (
-    habitId: string,
-    updatedData: Omit<Habit, 'id' | 'createdAt' | 'completedDates'>,
-  ) => {
-    setHabits(
-      habits.map((habit) =>
+  const editHabit = async (habitId: string, updatedData: UpdateHabitInput) => {
+    await updateHabitApi(habitId, updatedData);
+    setHabits((prev) =>
+      prev.map((habit) =>
         habit.id === habitId ? { ...habit, ...updatedData } : habit,
       ),
     );

@@ -59,3 +59,21 @@ export async function createHabit(input: NewHabitInput): Promise<Habit> {
 export async function deleteHabitApi(id: string): Promise<void> {
   await request(`/habits/${id}`, { method: 'DELETE' });
 }
+
+export interface UpdateHabitInput {
+  category: Habit['category'];
+  frequency: Habit['frequency'];
+  dailyTarget: number;
+  unit?: string;
+}
+
+export async function updateHabitApi(
+  id: string,
+  input: UpdateHabitInput,
+): Promise<void> {
+  const payload = { ...input, unit: input.unit === '' ? undefined : input.unit };
+  await request(`/habits/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+}

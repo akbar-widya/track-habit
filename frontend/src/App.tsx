@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import HabitList from './components/HabitList';
 import HabitForm from './components/HabitForm';
+import type { HabitFormData } from './components/HabitForm';
 import ConfirmDialog from './components/ConfirmDialog';
 import { format } from 'date-fns';
 import { useHabits } from './hooks/useHabits';
@@ -24,9 +25,14 @@ export default function App() {
     totalHabits,
   } = useHabits();
 
-  const handleFormSubmit = async (data: any) => {
+  const handleFormSubmit = async (data: HabitFormData) => {
     if (editingHabit) {
-      editHabit(editingHabit.id, data);
+      await editHabit(editingHabit.id, {
+        category: data.category,
+        frequency: data.frequency,
+        dailyTarget: data.dailyTarget,
+        unit: data.unit,
+      });
     } else {
       await addHabit(data);
     }

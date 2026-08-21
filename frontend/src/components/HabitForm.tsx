@@ -14,11 +14,11 @@ const formSchema = z.object({
   unit: z.string().max(25, 'Max 25 characters').optional(),
 });
 
-type FormData = z.infer<typeof formSchema>;
+export type HabitFormData = z.infer<typeof formSchema>;
 
 interface HabitFormProps {
   onClose: () => void;
-  onSubmitHabit: (data: FormData) => void | Promise<void>;
+  onSubmitHabit: (data: HabitFormData) => void | Promise<void>;
   initialData?: Habit | null;
 }
 
@@ -29,7 +29,7 @@ export default function HabitForm({
 }: HabitFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const { register, handleSubmit, watch, setValue } = useForm<FormData>({
+  const { register, handleSubmit, watch, setValue } = useForm<HabitFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData
       ? {
@@ -50,7 +50,7 @@ export default function HabitForm({
   const selectedCategory = watch('category');
   const selectedFrequency = watch('frequency');
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: HabitFormData) => {
     setIsSubmitting(true);
     setSubmitError(null);
     try {
