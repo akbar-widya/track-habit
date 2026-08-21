@@ -77,3 +77,14 @@ export async function updateHabitApi(
     body: JSON.stringify(payload),
   });
 }
+
+export async function checkInHabitApi(id: string, date: string): Promise<void> {
+  await request(`/habits/${id}/check-in`, {
+    method: 'POST',
+    body: JSON.stringify({ date }),
+  });
+}
+
+export async function removeCheckInApi(id: string, date: string): Promise<void> {
+  await request(`/habits/${id}/check-in/${date}`, { method: 'DELETE' });
+}

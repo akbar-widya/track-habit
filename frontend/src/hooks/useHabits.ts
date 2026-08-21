@@ -2,9 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import type { Habit } from '../types/habit';
 import { getTodayString } from '../utils/date';
 import {
+  checkInHabitApi,
   createHabit,
   deleteHabitApi,
   getHabits,
+  removeCheckInApi,
   updateHabitApi,
   type NewHabitInput,
   type UpdateHabitInput,
@@ -37,19 +39,40 @@ export function useHabits() {
     return created;
   };
 
-  const toggleHabitCompletion = (habitId: string, dateString: string) => {
-    setHabits(
-      habits.map((habit) => {
+  const toggleHabitCompletion = async (
+    habitId: string,
+    dateString: string,
+  ) => {
+    const isCompleted =
+      habits
+        .find((habit) => habit.id === habitId)
+        ?.completedDates.includes(dateString) ?? false;
+
+    const applyToggle = (list: Habit[]) =>
+      list.map((habit) => {
         if (habit.id !== habitId) return habit;
+        return {
+          ...habit,
+          completedDates: isCompleted
+            ? habit.completedDates.filter((d) => d !== dateString)
+            : [...habit.completedDates, dateString],
+        };
+      });
 
-        const isCompleted = habit.completedDates.includes(dateString);
-        const newDates = isCompleted
-          ? habit.completedDates.filter((d) => d !== dateString)
-          : [...habit.completedDates, dateString];
+    setHabits(applyToggle);
 
-        return { ...habit, completedDates: newDates };
-      }),
-    );
+    try {
+      if (isCompleted) {
+        await removeCheckInApi(habitId, dateString);
+      } else {
+        await checkInHabitApi(habitId, dateString);
+      }
+    } catch (err) {
+      setHabits(applyToggle);
+      setError(
+        err instanceof Error ? err.message : 'Failed to sync check-in',
+      );
+    }
   };
 
   const editHabit = async (habitId: string, updatedData: UpdateHabitInput) => {
