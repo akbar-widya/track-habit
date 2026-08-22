@@ -21,8 +21,8 @@ export default function PerformanceTrend({ habits }: PerformanceTrendProps) {
 
   const weeklyData = [
     last28Days.slice(0, 7).reduce((acc, day) => acc + day.completedCount, 0),
-    last28Days.slice(8, 14).reduce((acc, day) => acc + day.completedCount, 0),
-    last28Days.slice(15, 21).reduce((acc, day) => acc + day.completedCount, 0),
+    last28Days.slice(7, 14).reduce((acc, day) => acc + day.completedCount, 0),
+    last28Days.slice(14, 21).reduce((acc, day) => acc + day.completedCount, 0),
     last28Days.slice(21, 28).reduce((acc, day) => acc + day.completedCount, 0),
   ];
 
@@ -30,7 +30,7 @@ export default function PerformanceTrend({ habits }: PerformanceTrendProps) {
 
   // Helper to determine heatmap square color based on intensity
   const getIntensityClass = (count: number) => {
-    if (count === 0) return 'bg-[#1C1F26 border-[#23272F]';
+    if (count === 0) return 'bg-[#1C1F26] border-[#23272F]';
     if (count === 1) return 'bg-success/40 border-success/20';
     if (count === 2) return 'bg-success/70 border-success/40';
     return 'bg-success border-success/60';
