@@ -41,3 +41,5 @@ export const habitLogsRelations = relations(habitLogs, ({ one }) => ({
     references: [habits.id],
   }),
 }));
+
+export * from "./auth-schema";

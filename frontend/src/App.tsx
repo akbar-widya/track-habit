@@ -3,15 +3,21 @@ import HabitList from './components/HabitList';
 import HabitForm from './components/HabitForm';
 import type { HabitFormData } from './components/HabitForm';
 import ConfirmDialog from './components/ConfirmDialog';
+import AuthModal from './components/AuthModal';
 import { format } from 'date-fns';
 import { useHabits } from './hooks/useHabits';
 import PerformanceTrend from './components/PerformanceTrend';
 import type { Habit } from './types/habit';
+import { authClient } from './lib/auth-client';
 
 export default function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
   const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const { data: session, isPending: isSessionLoading } =
+    authClient.useSession();
+  const user = session?.user;
   const {
     habits,
     loading,
@@ -65,7 +71,26 @@ export default function App() {
       {/* Header */}
       <header className="border-b border-border h-16 flex items-center px-6 justify-between bg-background">
         <div className="font-bold tracking-tight">HabitEngine</div>
-        <div className="text-sm text-muted">Navigation Placeholder</div>
+        {isSessionLoading ? null : user ? (
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-muted">
+              {user.name || user.email}
+            </span>
+            <button
+              onClick={() => authClient.signOut()}
+              className="text-sm font-medium text-foreground bg-transparent hover:bg-surface-elevated border border-border rounded px-3 py-1.5 transition-colors"
+            >
+              Sign Out
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setIsAuthOpen(true)}
+            className="bg-primary hover:bg-primary-hover text-foreground px-4 py-2 rounded transition-colors font-medium text-sm"
+          >
+            Log In
+          </button>
+        )}
       </header>
 
       <main className="max-w-300 mx-auto px-6 py-10 flex flex-col gap-8">
@@ -122,6 +147,8 @@ export default function App() {
             initialData={editingHabit}
           />
         )}
+
+        {isAuthOpen && <AuthModal onClose={() => setIsAuthOpen(false)} />}
 
         {habitToDelete && (
           <ConfirmDialog

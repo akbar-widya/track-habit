@@ -3,15 +3,14 @@ import { zValidator } from '@hono/zod-validator';
 import { eq, and } from 'drizzle-orm';
 import { habits, habitLogs } from './schema/index';
 import { createDb } from './db';
+import { createAuth, type AuthEnv } from './auth';
 import {
   checkInSchema,
   createHabitSchema,
   updateHabitSchema,
 } from './validator';
 
-type Bindings = {
-  DB: D1Database;
-};
+type Bindings = AuthEnv;
 
 type HabitWithDates = {
   id: string;
@@ -184,4 +183,12 @@ app.delete('/habits/:id/check-in/:date', async (c) => {
   return c.json({ success: true, data: deleted[0] });
 });
 
-export default app; 
+const worker = new Hono<{ Bindings: Bindings }>();
+
+worker.on(['POST', 'GET'], '/api/auth/*', (c) =>
+  createAuth(c.env).handler(c.req.raw),
+);
+
+worker.route('/api', app);
+
+export default worker; 
