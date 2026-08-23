@@ -58,10 +58,14 @@ function GoogleButton() {
     setIsLoading(true);
     setError(null);
     try {
-      await authClient.signIn.social({
+      const { error } = await authClient.signIn.social({
         provider: 'google',
         callbackURL: '/',
       });
+      if (error) {
+        setError(error.message ?? 'Failed to start Google sign-in');
+        setIsLoading(false);
+      }
     } catch {
       setError('Failed to start Google sign-in');
       setIsLoading(false);
