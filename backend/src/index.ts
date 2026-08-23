@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { createMiddleware } from 'hono/factory';
 import { zValidator } from '@hono/zod-validator';
 import { eq, and } from 'drizzle-orm';
 import { habits, habitLogs } from './schema/index';
@@ -12,6 +13,19 @@ import {
 
 type Bindings = AuthEnv;
 
+type AuthInstance = ReturnType<typeof createAuth>;
+type SessionData = NonNullable<
+  Awaited<ReturnType<AuthInstance['api']['getSession']>>
+>;
+
+type AppEnv = {
+  Bindings: Bindings;
+  Variables: {
+    user: SessionData['user'];
+    session: SessionData['session'];
+  };
+};
+
 type HabitWithDates = {
   id: string;
   name: string;
@@ -23,19 +37,39 @@ type HabitWithDates = {
   completedDates: string[];
 };
 
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono<AppEnv>();
+
+const requireAuth = createMiddleware<AppEnv>(async (c, next) => {
+  const auth = createAuth(c.env);
+  const sessionData = await auth.api.getSession({
+    headers: c.req.raw.headers,
+  });
+
+  if (!sessionData) {
+    return c.json({ success: false, error: 'Unauthorized' }, 401);
+  }
+
+  c.set('user', sessionData.user);
+  c.set('session', sessionData.session);
+  await next();
+});
+
+app.use('/habits', requireAuth);
+app.use('/habits/*', requireAuth);
 
 app.get('/', async (c) => {
   return c.json({ message: 'Koneksi Drizzle ke Hono dan D1 berhasil!' });
 });
 
 app.get('/habits', async (c) => {
+  const user = c.get('user');
   const db = createDb(c.env.DB);
 
   const rows = await db
     .select()
     .from(habits)
-    .leftJoin(habitLogs, eq(habits.id, habitLogs.habitId));
+    .leftJoin(habitLogs, eq(habits.id, habitLogs.habitId))
+    .where(eq(habits.userId, user.id));
 
   const habitsMap = new Map<string, HabitWithDates>();
 
@@ -63,12 +97,14 @@ app.get('/habits', async (c) => {
 
 app.post('/habits', zValidator('json', createHabitSchema), async (c) => {
   const data = c.req.valid('json');
+  const user = c.get('user');
   const db = createDb(c.env.DB);
 
   const newHabit = await db
     .insert(habits)
     .values({
       id: crypto.randomUUID(),
+      userId: user.id,
       name: data.name,
       category: data.category,
       frequency: data.frequency,
@@ -87,6 +123,7 @@ app.post('/habits', zValidator('json', createHabitSchema), async (c) => {
 app.patch('/habits/:id', zValidator('json', updateHabitSchema), async (c) => {
   const { id } = c.req.param();
   const data = c.req.valid('json');
+  const user = c.get('user');
   const db = createDb(c.env.DB);
 
   if (Object.keys(data).length === 0) {
@@ -96,7 +133,7 @@ app.patch('/habits/:id', zValidator('json', updateHabitSchema), async (c) => {
   const updated = await db
     .update(habits)
     .set(data)
-    .where(eq(habits.id, id))
+    .where(and(eq(habits.id, id), eq(habits.userId, user.id)))
     .returning();
 
   if (updated.length === 0) {
@@ -108,11 +145,12 @@ app.patch('/habits/:id', zValidator('json', updateHabitSchema), async (c) => {
 
 app.delete('/habits/:id', async (c) => {
   const { id } = c.req.param();
+  const user = c.get('user');
   const db = createDb(c.env.DB);
 
   const deleted = await db
     .delete(habits)
-    .where(eq(habits.id, id))
+    .where(and(eq(habits.id, id), eq(habits.userId, user.id)))
     .returning();
 
   if (deleted.length === 0) {
@@ -128,12 +166,13 @@ app.post(
   async (c) => {
     const { id } = c.req.param();
     const { date } = c.req.valid('json');
+    const user = c.get('user');
     const db = createDb(c.env.DB);
 
     const habit = await db
       .select({ id: habits.id })
       .from(habits)
-      .where(eq(habits.id, id));
+      .where(and(eq(habits.id, id), eq(habits.userId, user.id)));
 
     if (habit.length === 0) {
       return c.json({ success: false, error: 'Habit not found' }, 404);
@@ -166,7 +205,20 @@ app.delete('/habits/:id/check-in/:date', async (c) => {
     );
   }
 
+  const user = c.get('user');
   const db = createDb(c.env.DB);
+
+  const ownedHabit = await db
+    .select({ id: habits.id })
+    .from(habits)
+    .where(and(eq(habits.id, id), eq(habits.userId, user.id)));
+
+  if (ownedHabit.length === 0) {
+    return c.json(
+      { success: false, error: `No check-in found on ${date}` },
+      404,
+    );
+  }
 
   const deleted = await db
     .delete(habitLogs)

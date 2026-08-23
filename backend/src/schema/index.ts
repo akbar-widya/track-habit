@@ -3,18 +3,27 @@ import {
   text,
   integer,
   primaryKey,
+  index,
 } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
+import { user } from "./auth-schema";
 
-export const habits = sqliteTable("habits", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  category: text("category").notNull(),
-  frequency: text("frequency").notNull(),
-  dailyTarget: integer("daily_target").notNull(),
-  unit: text("unit"),
-  createdAt: text("created_at").notNull(),
-});
+export const habits = sqliteTable(
+  "habits",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    category: text("category").notNull(),
+    frequency: text("frequency").notNull(),
+    dailyTarget: integer("daily_target").notNull(),
+    unit: text("unit"),
+    createdAt: text("created_at").notNull(),
+  },
+  (t) => [index("habits_userId_idx").on(t.userId)],
+);
 
 export const habitLogs = sqliteTable(
   "habit_logs",
