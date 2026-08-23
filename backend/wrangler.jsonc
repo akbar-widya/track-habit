@@ -3,12 +3,12 @@
   "name": "track-habit",
   "main": "src/index.ts",
   "compatibility_date": "2026-08-20",
+  "vars": {
+    "TRUSTED_ORIGINS": "https://track-habit.akbarwidya-dev.workers.dev"
+  },
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
   // "kv_namespaces": [
   //   {
   //     "binding": "MY_KV_NAMESPACE",
@@ -25,10 +25,15 @@
     {
       "binding": "DB",
       "database_name": "habits-db",
-      "database_id": "local-dev",
+      "database_id": "6bfe0638-e64d-4e6d-830c-a69464d28887",
       "migrations_dir": "drizzle/migrations"
     }
   ],
+  "assets": {
+    "directory": "../frontend/dist",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api", "/api/*"]
+  },
   // "ai": {
   //   "binding": "AI"
   // },

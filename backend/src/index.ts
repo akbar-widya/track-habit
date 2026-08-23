@@ -1,4 +1,4 @@
-import { Hono } from 'hono';
+import { Hono, type Context } from 'hono';
 import { createMiddleware } from 'hono/factory';
 import { zValidator } from '@hono/zod-validator';
 import { eq, and } from 'drizzle-orm';
@@ -236,6 +236,12 @@ app.delete('/habits/:id/check-in/:date', async (c) => {
 });
 
 const worker = new Hono<{ Bindings: Bindings }>();
+
+const healthHandler = (c: Context) =>
+  c.json({ message: 'Koneksi Drizzle ke Hono dan D1 berhasil!' });
+
+worker.get('/api', healthHandler);
+worker.get('/api/', healthHandler);
 
 worker.on(['POST', 'GET'], '/api/auth/*', (c) =>
   createAuth(c.env).handler(c.req.raw),
