@@ -50,7 +50,7 @@ export default function HabitList({
       <div className="border border-border rounded-lg bg-surface overflow-hidden">
         {/* Header Row */}
         <div className="flex items-center py-3 px-4 border-b border-border text-[11px] font-semibold text-muted uppercase tracking-wider">
-          <div className="w-60">Habit</div>
+          <div className="w-85">Habit</div>
           <div className="flex-1 flex justify-between px-2">
             {weekDays.map(({ dayName }) => (
               <div key={dayName} className="w-6 text-center">
@@ -58,9 +58,8 @@ export default function HabitList({
               </div>
             ))}
           </div>
-          <div className="w-50 flex justify-end gap-10 pr-2">
+          <div className="w-25 flex justify-end pr-2">
             <span>Streak</span>
-            <span>Progress</span>
           </div>
         </div>
 

@@ -27,17 +27,12 @@ export default function HabitItem({
 }: HabitItemProps) {
   const streak = calculateStreak(habit.completedDates);
 
-  const completedThisWeek = weekDays.filter((d) =>
-    habit.completedDates.includes(d.dateString),
-  ).length;
-  const progressPercentage = Math.round((completedThisWeek / 7) * 100);
-
   return (
     <div className="group flex items-center py-2 border-b border-border last:border-0 hover:bg-background/50 transition-colors">
       {/* Habit Name, Details & Action Button */}
-      <div className="w-60 flex-shrink-0 flex items-center justify-between pr-4">
-        <div className="flex flex-col truncate">
-          <h3 className="text-foreground text-[15px] font-medium tracking-tight truncate">
+      <div className="w-85 flex-shrink-0 flex items-center justify-between pr-4">
+        <div className="flex flex-col min-w-0">
+          <h3 className="text-foreground text-[15px] font-medium tracking-tight line-clamp-2 break-words">
             {habit.name}
           </h3>
           <p className="text-muted text-[12px] mt-0.5 font-medium">
@@ -103,7 +98,7 @@ export default function HabitItem({
       </div>
 
       {/* Metrics */}
-      <div className="flex items-center gap-6 w-50 justify-end flex-shrink-0">
+      <div className="flex items-center justify-end w-25 flex-shrink-0">
         <div className="flex items-center gap-1.5 text-foreground text-[14px]">
           <Flame
             className={cn(
@@ -113,9 +108,6 @@ export default function HabitItem({
           />
           <span className="font-semibold">{streak}</span>
           <span className="text-muted text-[12px] font-medium">days</span>
-        </div>
-        <div className="text-muted text-[12px] font-mono w-10 text-right">
-          {progressPercentage}%
         </div>
       </div>
     </div>
