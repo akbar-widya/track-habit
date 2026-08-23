@@ -31,6 +31,9 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const body = (await res.json()) as ApiSuccess<T> | ApiError;
 
   if (!res.ok || !body.success) {
+    if (res.status === 401) {
+      throw new Error('Your session has expired. Please sign in again.');
+    }
     const message =
       'error' in body ? body.error : `Request failed with status ${res.status}`;
     throw new Error(message);
