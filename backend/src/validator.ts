@@ -6,23 +6,24 @@ function toUtcDateString(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
+function shiftUtcDateString(days: number): string {
+  const shifted = new Date();
+  shifted.setUTCDate(shifted.getUTCDate() + days);
+  return toUtcDateString(shifted);
+}
+
 export const checkInDateSchema = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, `Date must be in ${DATE_FORMAT} format`)
   .refine((date) => !Number.isNaN(new Date(`${date}T00:00:00Z`).getTime()), {
     message: "Invalid calendar date",
   })
-  .refine((date) => date <= toUtcDateString(new Date()), {
+  .refine((date) => date <= shiftUtcDateString(1), {
     message: "Cannot check in for a future date",
   })
-  .refine(
-    (date) => {
-      const minDate = new Date();
-      minDate.setUTCDate(minDate.getUTCDate() - 6);
-      return date >= toUtcDateString(minDate);
-    },
-    { message: "Date must be within the last 7 days" },
-  );
+  .refine((date) => date >= shiftUtcDateString(-7), {
+    message: "Date must be within the last 7 days",
+  });
 
 export const checkInSchema = z.object({
   date: checkInDateSchema,
