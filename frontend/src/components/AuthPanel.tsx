@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { X } from 'lucide-react';
 import { useState } from 'react';
 import { useForm, type Resolver } from 'react-hook-form';
 import { z } from 'zod';
@@ -18,49 +17,35 @@ type SignUpFormData = z.infer<typeof signUpSchema>;
 
 type AuthMode = 'signin' | 'signup';
 
-interface AuthModalProps {
-  onClose: () => void;
-}
-
-export default function AuthModal({ onClose }: AuthModalProps) {
+export default function AuthPanel() {
   const [mode, setMode] = useState<AuthMode>('signin');
 
   return (
-    <div className="fixed inset-0 bg-background/80 flex items-center justify-center z-50">
-      <div className="bg-surface border border-border w-full max-w-md rounded-lg shadow-2xl overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-border">
-          <h2>{mode === 'signin' ? 'Welcome back' : 'Create account'}</h2>
-          <button
-            onClick={onClose}
-            className="text-muted hover:text-foreground transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        <div className="p-5 flex flex-col gap-6">
-          {/* Google button */}
-          <GoogleButton />
-
-          {/* Divider */}
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-border" />
-            <span className="text-[11px] text-muted uppercase tracking-wider">
-              or continue with email
-            </span>
-            <div className="h-px flex-1 bg-border" />
-          </div>
-
-          {/* Email/password form — keyed by mode so the form resets on switch */}
-          <AuthForm
-            key={mode}
-            mode={mode}
-            onSuccess={onClose}
-            onSwitchMode={setMode}
-          />
-        </div>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-1.5">
+        <h2 className="text-xl font-semibold tracking-tight">
+          {mode === 'signin' ? 'Welcome back' : 'Create account'}
+        </h2>
+        <p className="text-sm text-muted">
+          {mode === 'signin'
+            ? 'Sign in to keep your streak alive.'
+            : 'Start building your routine today.'}
+        </p>
       </div>
+
+      <GoogleButton />
+
+      {/* Divider */}
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-border" />
+        <span className="text-[11px] text-muted uppercase tracking-wider">
+          or continue with email
+        </span>
+        <div className="h-px flex-1 bg-border" />
+      </div>
+
+      {/* Email/password form — keyed by mode so the form resets on switch */}
+      <AuthForm key={mode} mode={mode} onSwitchMode={setMode} />
     </div>
   );
 }
@@ -122,11 +107,10 @@ function GoogleButton() {
 
 interface AuthFormProps {
   mode: AuthMode;
-  onSuccess: () => void;
   onSwitchMode: (mode: AuthMode) => void;
 }
 
-function AuthForm({ mode, onSuccess, onSwitchMode }: AuthFormProps) {
+function AuthForm({ mode, onSwitchMode }: AuthFormProps) {
   const isSignUp = mode === 'signup';
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -163,7 +147,8 @@ function AuthForm({ mode, onSuccess, onSwitchMode }: AuthFormProps) {
       return;
     }
 
-    onSuccess();
+    // Session hook in App picks up the new session and swaps the view.
+    setIsSubmitting(false);
   };
 
   const inputClass =
