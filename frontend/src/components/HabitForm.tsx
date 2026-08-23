@@ -92,9 +92,14 @@ export default function HabitForm({
               {...register('name')}
               disabled={!!initialData}
               placeholder="e.g., Read 10 pages"
-              className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
+              className="bg-background border border-border rounded px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               autoFocus
             />
+            {initialData && (
+              <p className="text-[12px] text-muted">
+                Habit name can't be changed after creation.
+              </p>
+            )}
           </div>
 
           {/* Category */}
